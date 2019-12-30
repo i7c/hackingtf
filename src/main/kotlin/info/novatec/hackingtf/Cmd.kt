@@ -51,10 +51,12 @@ fun bashCaptureJson(script: () -> String): Any = runBashScriptCaptureOutput(scri
 
 inline fun <reified T> cd(dir: File, contextualFunction: (dir: File) -> T): T {
     val backup = System.getProperty("user.dir")
-    System.setProperty("user.dir", dir.absolutePath)
-    val result = contextualFunction(dir)
-    System.setProperty("user.dir", backup)
-    return result
+    return try {
+        System.setProperty("user.dir", dir.absolutePath)
+        contextualFunction(dir)
+    } finally {
+        System.setProperty("user.dir", backup)
+    }
 }
 
 fun file(file: File, content: () -> String): File {

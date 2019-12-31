@@ -19,10 +19,8 @@ class ImportTests {
 
         setupImportDir(workingDir)
         val tfSchema = getTfSchema(workingDir)
+        stateImport(workingDir, importResources)
 
-        bash { """
-            
-        """.trimIndent() }
 //
 //            val tfPlanFile = File(it, "plan")
 //            val tfPlan = bashCaptureJson { """
@@ -33,6 +31,32 @@ class ImportTests {
         println(workingDir.absolutePath)
         workingDir.deleteRecursively()
     }
+
+    private fun stateImport(
+        workingDir: File,
+        importResources: List<Map<String, Any?>>
+    ) {
+        cd(workingDir) {
+            importResources.forEach {
+                bash {
+                    """
+                        terraform import -allow-missing-config "${mapToTfType(
+                        it["id"] as String,
+                        it["name"] as String
+                    )}" "${it["id"]}"
+                    """.trimIndent()
+                }
+            }
+        }
+    }
+
+    private fun mapToTfType(id: String, name: String): String =
+        when {
+            Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.DBforMySQL/servers/.*$").matches(id) -> "azurerm_mysql_server.$name"
+            Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.ContainerService/managedClusters/.*$").matches(id) -> "azurerm_kubernetes_cluster.$name"
+            Regex("/subscriptions/.*/resourceGroups/.*/providers/Microsoft.Network/virtualNetworks/.*$").matches(id) -> "azurerm_virtual_network.$name"
+            else -> throw IllegalArgumentException("Unknown resource type $id")
+        }
 
     private fun setupImportDir(workingDir: File) {
         cd(workingDir) {

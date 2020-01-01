@@ -9,11 +9,11 @@ class ImportTests {
     fun `Terraform Import Test`() {
 
         val importRgs =
-            bashCaptureJson { """az group list | jq '[ .[].name | select (test("^cwe-importt?est")) ]'""" } as List<String>
+            bashCaptureJson { """az group list | jq '[ .[] | select (.name | test("^cwe-importt?est")) ]'""" } as List<Map<String, Any?>>
         val importResources =
             importRgs.flatMap {
-                bashCaptureJson { """ az resource list -g "$it" """ } as List<Map<String, Any?>>
-            }
+                bashCaptureJson { """ az resource list -g "${it["name"]}" """ } as List<Map<String, Any?>>
+            }.plus(importRgs)
 
         val workingDir = createTempDir()
 
@@ -59,10 +59,9 @@ class ImportTests {
     private fun mapToTfType(id: String, name: String): String =
         when {
             Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.DBforMySQL/servers/.*$").matches(id) -> "azurerm_mysql_server.$name"
-            Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.ContainerService/managedClusters/.*$").matches(
-                id
-            ) -> "azurerm_kubernetes_cluster.$name"
+            Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.ContainerService/managedClusters/.*$").matches(id) -> "azurerm_kubernetes_cluster.$name"
             Regex("/subscriptions/.*/resourceGroups/.*/providers/Microsoft.Network/virtualNetworks/.*$").matches(id) -> "azurerm_virtual_network.$name"
+            Regex("/subscriptions/.*/resourceGroups/.*$").matches(id) -> "azurerm_resource_group.$name"
             else -> throw IllegalArgumentException("Unknown resource type $id")
         }
 

@@ -1,7 +1,7 @@
 package info.novatec.hackingtf
 
-import org.junit.Test
 import java.io.File
+import org.junit.Test
 
 class ImportTests {
 

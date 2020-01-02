@@ -21,6 +21,13 @@ class ImportTests {
         stateImport(workingDir, importResources)
         val tfPlan = getTfPlan(workingDir)
 
+        val resourceSchemas = tfSchema.jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
+        val resourceChanges = tfPlan.jsonPath<List<Map<String, Any?>>>("$.resource_changes")
+
+        val resourceDefinitions = resourceChanges.map {
+            GenericAzureResource(it, resourceSchemas[it["type"]] as Map<String, Any?>).resourceCode()
+        }
+
         println(workingDir.absolutePath)
         workingDir.deleteRecursively()
     }

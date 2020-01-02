@@ -13,6 +13,8 @@ repositories {
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
+    implementation("com.jayway.jsonpath:json-path:2.4.0")
+    implementation("com.jayway.jsonpath:json-path-assert:2.4.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0")

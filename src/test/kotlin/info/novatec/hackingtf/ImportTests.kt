@@ -32,8 +32,9 @@ class ImportTests {
         }
 
         cd(workingDir) { bash { """
-            terraform validate
+            set -e
             terraform fmt
+            terraform validate
         """.trimIndent()}}
 
         println(workingDir.absolutePath)

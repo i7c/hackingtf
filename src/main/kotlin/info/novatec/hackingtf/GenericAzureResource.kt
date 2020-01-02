@@ -8,7 +8,7 @@ class GenericAzureResource(
     val attributes = resourceChanges.jsonPath<Map<String, Any?>>("$.change.before")
 
     fun resourceCode(): String =
-    """
+        """
         resource "${resourceChanges["type"]}" "${resourceChanges["name"]}" {
           ${attributesCode(attributes.keys)}
         }
@@ -18,7 +18,7 @@ class GenericAzureResource(
         attributeNames
             .filter { attributeSchemas[it] != null }
             .filterNot { attributeSchemas[it]!!.jsonPath("$.computed") ?: false }
-            .joinToString("\n\n", transform = ::attributeCode)
+            .joinToString("\n", transform = ::attributeCode)
 
     private fun attributeCode(attribute: String): String =
     """

@@ -31,6 +31,11 @@ class ImportTests {
             }
         }
 
+        cd(workingDir) { bash { """
+            terraform validate
+            terraform fmt
+        """.trimIndent()}}
+
         println(workingDir.absolutePath)
         workingDir.deleteRecursively()
     }

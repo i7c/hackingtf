@@ -1,5 +1,7 @@
 package info.novatec.hackingtf
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+
 class GenericAzureResource(
     private val resourceChanges: Map<String, Any?>,
     private val schema: Map<String, Any?>
@@ -21,8 +23,5 @@ class GenericAzureResource(
             .joinToString("\n", transform = ::attributeCode)
 
     private fun attributeCode(attribute: String): String =
-    """
-        $attribute = THE VALUE GOES HERE
-
-    """.trimIndent()
+        "$attribute = ${jacksonObjectMapper().writeValueAsString(attributes[attribute])}"
 }

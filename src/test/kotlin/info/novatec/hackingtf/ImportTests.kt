@@ -1,6 +1,7 @@
 package info.novatec.hackingtf
 
 import org.junit.Test
+import java.io.File
 
 class ImportTests {
 
@@ -24,8 +25,10 @@ class ImportTests {
         val resourceSchemas = tfSchema.jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
         val resourceChanges = tfPlan.jsonPath<List<Map<String, Any?>>>("$.resource_changes")
 
-        val resourceDefinitions = resourceChanges.map {
-            GenericAzureResource(it, resourceSchemas[it["type"]] as Map<String, Any?>).resourceCode()
+        file(File(workingDir, "generated.tf")) {
+            resourceChanges.joinToString(separator = "\n\n") {
+                GenericAzureResource(it, resourceSchemas[it["type"]] as Map<String, Any?>).resourceCode()
+            }
         }
 
         println(workingDir.absolutePath)

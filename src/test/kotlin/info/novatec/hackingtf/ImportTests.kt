@@ -1,8 +1,8 @@
 package info.novatec.hackingtf
 
 import info.novatec.hackingtf.azure.GenericAzureResource
-import org.junit.Test
 import java.io.File
+import org.junit.Test
 
 class ImportTests {
 
@@ -36,7 +36,7 @@ class ImportTests {
             set -e
             terraform fmt
             terraform validate
-        """.trimIndent()}}
+        """.trimIndent() } }
 
         println(workingDir.absolutePath)
         workingDir.deleteRecursively()

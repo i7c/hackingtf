@@ -12,11 +12,11 @@ class GenericAzureResource(
     fun resourceCode(): String =
         """
         resource "${resourceChanges["type"]}" "${resourceChanges["name"]}" {
-          ${attributesCode(attributes.keys)}
+          ${attributesCode(attributes.keys.sorted())}
         }
     """.trimIndent()
 
-    private fun attributesCode(attributeNames: Set<String>): String =
+    private fun attributesCode(attributeNames: Iterable<String>): String =
         attributeNames
             .filter { attributeSchemas[it] != null }
             .filterNot { attributeSchemas[it]!!.jsonPath("$.computed") ?: false }

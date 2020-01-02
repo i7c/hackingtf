@@ -1,6 +1,7 @@
-package info.novatec.hackingtf
+package info.novatec.hackingtf.azure
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import info.novatec.hackingtf.jsonPath
 
 class GenericAzureResource(
     private val resourceChanges: Map<String, Any?>,

@@ -1,5 +1,6 @@
 package info.novatec.hackingtf
 
+import info.novatec.hackingtf.azure.GenericAzureResource
 import org.junit.Test
 import java.io.File
 

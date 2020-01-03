@@ -1,6 +1,6 @@
 package info.novatec.hackingtf
 
-import info.novatec.hackingtf.azure.GenericAzureResource
+import info.novatec.hackingtf.azure.GenericAzureConfigurationBlock
 import java.io.File
 import org.junit.Test
 
@@ -19,16 +19,18 @@ class ImportTests {
         val workingDir = createTempDir()
 
         setupImportDir(workingDir)
-        val tfSchema = getTfSchema(workingDir)
+        val resourceSchemas = getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
         stateImport(workingDir, importResources)
-        val tfPlan = getTfPlan(workingDir)
-
-        val resourceSchemas = tfSchema.jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
-        val resourceChanges = tfPlan.jsonPath<List<Map<String, Any?>>>("$.resource_changes")
+        val resourceChanges = getTfPlan(workingDir).jsonPath<List<Map<String, Any?>>>("$.resource_changes")
 
         file(File(workingDir, "generated.tf")) {
             resourceChanges.joinToString(separator = "\n\n") {
-                GenericAzureResource(it, resourceSchemas[it["type"]] as Map<String, Any?>).resourceCode()
+                GenericAzureConfigurationBlock(
+                    it["name"] as String,
+                    it.jsonPath("$.change.before"),
+                    resourceSchemas[it["type"]]!!.jsonPath<Map<String, Any?>>("$.block"),
+                    it["type"] as String
+                ).resourceCode()
             }
         }
 

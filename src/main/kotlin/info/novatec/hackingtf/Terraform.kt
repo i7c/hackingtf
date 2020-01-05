@@ -5,20 +5,12 @@ import java.io.File
 
 fun setupImportDir(workingDir: File) {
     cd(workingDir) {
-        file(File(it, "main.tf")) { """
-                    terraform {
-                      required_providers {
-                        azurerm = "~>1.29"
-                      }
-                    }
-
-                    provider azurerm {}
-                    """.trimIndent() }
+        file(File(it, "main.tf")) { "provider azurerm {}" }
 
         bash { """
               terraform init -no-color
               terraform validate -no-color
-              """.trimIndent() }
+              """ }
     }
 }
 

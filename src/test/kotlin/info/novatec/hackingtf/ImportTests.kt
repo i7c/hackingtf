@@ -10,16 +10,21 @@ class ImportTests {
     fun `Terraform Import Test`() {
 
         val importRgs =
-            bashCaptureJson { """az group list | jq '[ .[] | select (.name | test("^cwe-importt?est")) ]'""" } as List<Map<String, Any?>>
-        val importResources =
-            importRgs.flatMap {
-                bashCaptureJson { """ az resource list -g "${it["name"]}" """ } as List<Map<String, Any?>>
-            }.plus(importRgs)
+            bashCaptureJson {
+                """
+                az group list \
+                    | jq '[ .[] | select (.name | test("^cwe-importt?est")) ]'
+            """
+            } as List<Map<String, Any?>>
+        val importResources = importRgs.flatMap {
+            bashCaptureJson { """ az resource list -g "${it["name"]}" """ } as List<Map<String, Any?>>
+        }.plus(importRgs)
 
         val workingDir = createTempDir()
 
         setupImportDir(workingDir)
-        val resourceSchemas = getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
+        val resourceSchemas =
+            getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
         stateImport(workingDir, importResources)
         val resourceChanges = getTfPlan(workingDir).jsonPath<List<Map<String, Any?>>>("$.resource_changes")
 

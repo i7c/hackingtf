@@ -1,6 +1,6 @@
 package info.novatec.hackingtf.azure
 
-fun mapToTfType(id: String, name: String): String =
+fun azureIdToNamedResource(id: String, name: String): String =
     when {
         Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.DBforMySQL/servers/.*$").matches(id) -> "azurerm_mysql_server.$name"
         Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.ContainerService/managedClusters/.*$").matches(id) -> "azurerm_kubernetes_cluster.$name"

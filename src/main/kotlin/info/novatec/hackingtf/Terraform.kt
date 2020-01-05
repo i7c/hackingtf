@@ -1,6 +1,6 @@
 package info.novatec.hackingtf
 
-import info.novatec.hackingtf.azure.mapToTfType
+import info.novatec.hackingtf.azure.azureIdToNamedResource
 import java.io.File
 
 fun setupImportDir(workingDir: File) {
@@ -28,7 +28,7 @@ fun stateImport(
 ) {
     cd(workingDir) {
         importResources.forEach {
-            bash { """ terraform import -allow-missing-config "${mapToTfType(it["id"] as String, it["name"] as String)}" "${it["id"]}" """.trimIndent() }
+            bash { """ terraform import -allow-missing-config "${azureIdToNamedResource(it["id"] as String, it["name"] as String)}" "${it["id"]}" """.trimIndent() }
         }
     }
 }

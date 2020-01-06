@@ -3,9 +3,9 @@ package info.novatec.hackingtf
 import info.novatec.hackingtf.azure.azureIdToNamedResource
 import java.io.File
 
-fun setupImportDir(workingDir: File) {
+fun setupImportDir(workingDir: File, provider: String) {
     cd(workingDir) {
-        file(File(it, "main.tf")) { "provider azurerm {}" }
+        file(File(it, "main.tf")) { "provider $provider {}" }
 
         bash { """
               terraform init -no-color

@@ -22,7 +22,7 @@ class ImportTests {
 
         val workingDir = createTempDir()
 
-        setupImportDir(workingDir)
+        setupImportDir(workingDir, "azurerm")
         val resourceSchemas =
             getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
         stateImport(workingDir, importResources)

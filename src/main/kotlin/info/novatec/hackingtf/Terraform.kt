@@ -1,28 +1,16 @@
 package info.novatec.hackingtf
 
-import info.novatec.hackingtf.azure.azureIdToNamedResource
 import java.io.File
 
-fun setupImportDir(workingDir: File, provider: String) {
+fun tfInitNew(workingDir: File, provider: String) {
     cd(workingDir) {
         file(File(it, "main.tf")) { "provider $provider {}" }
-
-        bash { """
-              terraform init -no-color
-              terraform validate -no-color
-              """ }
+        bash { "terraform init -no-color && terraform validate -no-color" }
     }
 }
 
-fun stateImport(
-    workingDir: File,
-    importResources: List<Map<String, Any?>>
-) {
-    cd(workingDir) {
-        importResources.forEach {
-            bash { """ terraform import -allow-missing-config "${azureIdToNamedResource(it["id"] as String, it["name"] as String)}" "${it["id"]}" """.trimIndent() }
-        }
-    }
+fun tfImportResource(tfResource: String, id: String) {
+    bash { """terraform import -allow-missing-config "$tfResource" "$id"""" }
 }
 
 fun getTfPlan(workingDir: File): Map<String, Any?> {

@@ -1,5 +1,6 @@
 package info.novatec.hackingtf
 
+import info.novatec.hackingtf.azure.azureIdToNamedResource
 import info.novatec.hackingtf.terraform.GenericConfigurationBlock
 import java.io.File
 import org.junit.Test
@@ -22,10 +23,15 @@ class ImportTests {
 
         val workingDir = createTempDir()
 
-        setupImportDir(workingDir, "azurerm")
-        val resourceSchemas =
-            getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
-        stateImport(workingDir, importResources)
+        tfInitNew(workingDir, "azurerm")
+        val resourceSchemas = getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
+
+        cd(workingDir) {
+            importResources.forEach {
+                tfImportResource(azureIdToNamedResource(it["id"] as String, it["name"] as String), it["id"] as String)
+            }
+        }
+
         val resourceChanges = getTfPlan(workingDir).jsonPath<List<Map<String, Any?>>>("$.resource_changes")
 
         file(File(workingDir, "generated.tf")) {

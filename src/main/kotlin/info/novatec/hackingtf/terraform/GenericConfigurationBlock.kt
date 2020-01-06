@@ -56,14 +56,6 @@ class GenericConfigurationBlock(
                             }.joinToString("\n")
                     }
 
-                    // In case we have a map, there is only one instance and we generate it.
-                    is Map<*, *> ->
-                        GenericConfigurationBlock(
-                            blockName,
-                            blockAttribute as Map<String, Any?>,
-                            blockSchema as Map<String, Any?>
-                        ).blockCode()
-
                     else -> throw IllegalArgumentException("Unknown block type for $blockName")
                 }
             }

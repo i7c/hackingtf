@@ -1,6 +1,6 @@
 package info.novatec.hackingtf
 
-import info.novatec.hackingtf.azure.GenericAzureConfigurationBlock
+import info.novatec.hackingtf.terraform.GenericConfigurationBlock
 import java.io.File
 import org.junit.Test
 
@@ -30,7 +30,7 @@ class ImportTests {
 
         file(File(workingDir, "generated.tf")) {
             resourceChanges.joinToString(separator = "\n\n") {
-                GenericAzureConfigurationBlock(
+                GenericConfigurationBlock(
                     it["name"] as String,
                     it.jsonPath("$.change.before"),
                     resourceSchemas[it["type"]]!!.jsonPath<Map<String, Any?>>("$.block"),

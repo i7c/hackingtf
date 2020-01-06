@@ -1,9 +1,9 @@
-package info.novatec.hackingtf.azure
+package info.novatec.hackingtf.terraform
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import info.novatec.hackingtf.jsonPath
 
-class GenericAzureConfigurationBlock(
+class GenericConfigurationBlock(
     private val name: String,
     private val attributes: Map<String, Any?>,
     private val schemas: Map<String, Any?>,
@@ -16,7 +16,7 @@ class GenericAzureConfigurationBlock(
         """
         resource "$type" "$name" {
           ${attributesCode(attributes.keys.sorted())}
-          
+
           ${blocksCode(attributes.keys.sorted())}
         }
     """.trimIndent()
@@ -25,7 +25,7 @@ class GenericAzureConfigurationBlock(
         """
         $name {
           ${attributesCode(attributes.keys.sorted())}
-                    
+
           ${blocksCode(attributes.keys.sorted())}
         }
         """.trimIndent()
@@ -48,7 +48,7 @@ class GenericAzureConfigurationBlock(
                     is List<*> -> {
                         blockAttribute
                             .map { attributes ->
-                                GenericAzureConfigurationBlock(
+                                GenericConfigurationBlock(
                                     blockName,
                                     attributes as Map<String, Any?>,
                                     blockSchema
@@ -58,7 +58,7 @@ class GenericAzureConfigurationBlock(
 
                     // In case we have a map, there is only one instance and we generate it.
                     is Map<*, *> ->
-                        GenericAzureConfigurationBlock(
+                        GenericConfigurationBlock(
                             blockName,
                             blockAttribute as Map<String, Any?>,
                             blockSchema as Map<String, Any?>

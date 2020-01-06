@@ -35,7 +35,7 @@ class ImportTests {
         val resourceChanges = getTfPlan(workingDir).jsonPath<List<Map<String, Any?>>>("$.resource_changes")
 
         file(File(workingDir, "generated.tf")) {
-            resourceChanges.joinToString(separator = "\n") {
+            resourceChanges.joinToString(separator = "") {
                 GenericConfigurationBlock(
                     it["name"] as String,
                     it.jsonPath("$.change.before"),

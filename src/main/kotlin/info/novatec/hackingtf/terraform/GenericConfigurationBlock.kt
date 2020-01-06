@@ -12,23 +12,18 @@ class GenericConfigurationBlock(
     private val attributeSchemas = schemas.jsonPath<Map<String, Any?>?>("$.attributes")
     private val blockSchemas = schemas.jsonPath<Map<String, Any?>?>("$.block_types")
 
-    fun resourceCode(): String =
-        """
+    fun resourceCode(): String = """
         resource "$type" "$name" {
           ${attributesCode(attributes.keys.sorted())}
-
           ${blocksCode(attributes.keys.sorted())}
         }
-    """.trimIndent()
-
-    private fun blockCode() =
         """
+
+    private fun blockCode() = """
         $name {
           ${attributesCode(attributes.keys.sorted())}
-
           ${blocksCode(attributes.keys.sorted())}
-        }
-        """.trimIndent()
+        }"""
 
     private fun attributesCode(attributeNames: Iterable<String>): String =
         attributeNames
@@ -39,7 +34,7 @@ class GenericConfigurationBlock(
     private fun blocksCode(attributeNames: List<String>): String =
         attributeNames
             .filter { blockSchemas?.get(it) != null }
-            .joinToString("\n") { blockName ->
+            .joinToString("") { blockName ->
                 val blockSchema = (blockSchemas?.get(blockName) ?: error("No block schema for $blockName found"))
                     .jsonPath<Map<String, Any?>>("$.block")
                 when (val blockAttribute = attributes[blockName]) {
@@ -60,6 +55,5 @@ class GenericConfigurationBlock(
                 }
             }
 
-    private fun attributeCode(attribute: String): String =
-        "$attribute = ${jacksonObjectMapper().writeValueAsString(attributes[attribute])}"
+    private fun attributeCode(attribute: String) = "$attribute = ${jacksonObjectMapper().writeValueAsString(attributes[attribute])}"
 }

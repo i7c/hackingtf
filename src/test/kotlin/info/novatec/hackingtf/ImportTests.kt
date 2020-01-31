@@ -1,6 +1,8 @@
 package info.novatec.hackingtf
 
 import info.novatec.hackingtf.azure.azureIdToNamedResource
+import info.novatec.hackingtf.azure.resourceChangesJsonPath
+import info.novatec.hackingtf.azure.schemaJsonPath
 import info.novatec.hackingtf.terraform.GenericConfigurationBlock
 import org.junit.Test
 import java.io.File
@@ -28,11 +30,10 @@ class ImportTests {
         }
     }
 
-
     @Test
     fun `Generate code`() {
-        val resourceSchemas = getTfSchema(workingDir).jsonPath<Map<String, Any?>>("$.provider_schemas.azurerm.resource_schemas")
-        val resourceChanges = getTfPlan(workingDir).jsonPath<List<Map<String, Any?>>>("$.resource_changes")
+        val resourceSchemas = getTfSchema(workingDir).jsonPath<Map<String, Any?>>(schemaJsonPath)
+        val resourceChanges = getTfPlan(workingDir).jsonPath<List<Map<String, Any?>>>(resourceChangesJsonPath)
 
         file(File(workingDir, "generated.tf")) {
             resourceChanges.joinToString(separator = "") {

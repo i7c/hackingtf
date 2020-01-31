@@ -1,5 +1,8 @@
 package info.novatec.hackingtf.azure
 
+val schemaJsonPath = "$.provider_schemas.azurerm.resource_schemas"
+val resourceChangesJsonPath = "$.resource_changes"
+
 fun azureIdToNamedResource(id: String, name: String): String =
     when {
         Regex("^/subscriptions/.*/resourceGroups/.*/providers/Microsoft.DBforMySQL/servers/.*$").matches(id) -> "azurerm_mysql_server.$name"

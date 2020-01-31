@@ -51,7 +51,7 @@ class GenericConfigurationBlock(
                             }.joinToString("\n")
                     }
 
-                    else -> throw IllegalArgumentException("Unknown block type for $blockName")
+                    else -> "# Unknown attribute type for attribute $blockName"
                 }
             }
 
